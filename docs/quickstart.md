@@ -27,7 +27,8 @@ curl -fsSLO https://github.com/pyramidheadshark/scaffold/releases/latest/downloa
 ## 2. Распаковать
 
 ```bash
-mkdir scaffold && tar -xzf scaffold-linux-x64.tar.gz (сейчас единственная платформа релиза) -C scaffold
+# scaffold-linux-x64.tar.gz — сейчас единственная платформа релиза (см. предупреждение выше)
+mkdir scaffold && tar -xzf scaffold-linux-x64.tar.gz -C scaffold
 cd scaffold
 ```
 
@@ -39,19 +40,26 @@ TypeScript-ядра в архиве нет.
 ## 3. Установить
 
 ```bash
+export SCAFFOLD_KERNEL_REPO=pyramidheadshark/scaffold-kernel
 bash install.sh
 ```
 
-⚠ **Скачивание ядра идёт из своего источника, не из этого репозитория.**
-`install.sh` по умолчанию тянет релиз ядра из `pyramidheadshark/pi-scaffold`
-(приватный репозиторий владельца) — для установки без учётных данных источник
-переопределён переменной `SCAFFOLD_KERNEL_REPO`, указывающей на публичный
-`pyramidheadshark/scaffold-kernel`. Если вы форкаете это распространение под своим
-именем — не забудьте задать собственный `SCAFFOLD_KERNEL_REPO`, иначе установка у
-анонимного пользователя упрётся в приватный репозиторий без токена:
+⚠ **Экспорт переменной обязателен.** `install.sh` по умолчанию тянет релиз ядра из
+`pyramidheadshark/pi-scaffold` — это приватный репозиторий исходников владельца, и без
+переменной выше анонимная установка упрётся в 404 и попросит `gh auth`/`GITHUB_TOKEN`.
+`SCAFFOLD_KERNEL_REPO` указывает на отдельный публичный репозиторий с готовыми
+бинарями ядра — `pyramidheadshark/scaffold-kernel`. Если вы форкаете это
+распространение под своим именем — задайте здесь собственный репозиторий с релизами
+ядра.
+
+⚠ **`scaffold update` и откат (ниже) читают ту же переменную заново при каждом
+запуске** — она не сохраняется установщиком. Если не добавить её в свой профиль
+шелла, обновление в новом терминале снова упрётся в приватный репозиторий:
 
 ```bash
-export SCAFFOLD_KERNEL_REPO=pyramidheadshark/scaffold-kernel
+echo 'export SCAFFOLD_KERNEL_REPO=pyramidheadshark/scaffold-kernel' >> ~/.bashrc   # bash
+echo 'export SCAFFOLD_KERNEL_REPO=pyramidheadshark/scaffold-kernel' >> ~/.zshrc    # zsh
+set -Ux SCAFFOLD_KERNEL_REPO pyramidheadshark/scaffold-kernel                      # fish
 ```
 
 Скрипт:
@@ -77,9 +85,14 @@ brew install minisign jq          # macOS
 ## 4. Проверить установку
 
 ```bash
+export PATH="$HOME/.local/bin:$PATH"  # если install.sh предупредил, что ~/.local/bin не в PATH
 scaffold --version     # версия CLI и ядра одной строкой
 scaffold doctor         # health-check: PATH, provider-auth, число загруженных плагинов
 ```
+
+Для новых терминалов install.sh уже показал команду добавления `~/.local/bin` в
+профиль вашего шелла (bash/zsh/fish) — строка выше нужна только для проверки в
+текущей сессии сразу после установки.
 
 ## 5. Настроить провайдера модели
 
@@ -122,7 +135,7 @@ scaffold --version   # проверить, что версия сменилас�
 Если после обновления что-то сломалось — конкретная версия ядра ставится явно:
 
 ```bash
-SCAFFOLD_VERSION=<предыдущая-версия> bash install.sh
+SCAFFOLD_KERNEL_REPO=pyramidheadshark/scaffold-kernel SCAFFOLD_VERSION=<предыдущая-версия> bash install.sh
 ```
 
 Проверка подписи при откате не отключается так же, как и при первой установке. Конфиги,

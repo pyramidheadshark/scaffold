@@ -77,11 +77,15 @@ curl -fsSLO https://github.com/pyramidheadshark/scaffold/releases/latest/downloa
 # 2. Распаковать
 mkdir scaffold && tar -xzf scaffold-linux-x64.tar.gz -C scaffold && cd scaffold
 
-# 3. Установить: скрипт скачивает ядро, ПРОВЕРЯЕТ Ed25519-подпись манифеста
-#    и SHA-256 контрольную сумму бинаря ядра — проверка не отключается
+# 3. Установить: релиз ядра лежит в отдельном публичном репозитории, а не в этом —
+#    без переменной ниже install.sh уйдёт в приватный репозиторий исходников и упадёт.
+#    Скрипт скачивает ядро, ПРОВЕРЯЕТ Ed25519-подпись манифеста и SHA-256 контрольную
+#    сумму бинаря ядра — проверка не отключается.
+export SCAFFOLD_KERNEL_REPO=pyramidheadshark/scaffold-kernel
 bash install.sh
 
-# 4. Проверить
+# 4. Проверить (если ~/.local/bin ещё не в PATH — установщик подскажет команду для вашего шелла)
+export PATH="$HOME/.local/bin:$PATH"
 scaffold --version
 scaffold doctor
 ```
