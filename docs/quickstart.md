@@ -1,8 +1,8 @@
 # Быстрый старт
 
-> [!WARNING]
-> Первый релиз включает только `linux-x64`. Остальные платформы, перечисленные
-> ниже, добавляются следующим релизом той же сборкой, что уже используется для ядра.
+> [!NOTE]
+> Релиз включает все четыре платформы: `linux-x64`, `linux-arm64`, `darwin-arm64`
+> (macOS на Apple Silicon), `windows-x64`.
 
 Эта страница описывает проверенный путь установки **скомпилированного клиентского
 артефакта**: без `git clone`, без доступа к приватному репозиторию исходников, без
@@ -17,7 +17,7 @@
 curl -fsSLO https://github.com/pyramidheadshark/scaffold/releases/latest/download/scaffold-linux-x64.tar.gz
 ```
 
-Поддерживаемые `<PLATFORM>`: `linux-x64`, `linux-arm64`, `macos-arm64`,
+Поддерживаемые `<PLATFORM>`: `linux-x64`, `linux-arm64`, `darwin-arm64`,
 `windows-x64`. На Windows `install.sh` запускается из Git Bash (штатно ставится вместе
 с Git for Windows) — определяет платформу автоматически и качает `.exe`-ассет; отдельного
 установщика не требуется. Windows-бинарь пока не имеет Authenticode-подписи (проверка
@@ -27,7 +27,7 @@ curl -fsSLO https://github.com/pyramidheadshark/scaffold/releases/latest/downloa
 ## 2. Распаковать
 
 ```bash
-# scaffold-linux-x64.tar.gz — сейчас единственная платформа релиза (см. предупреждение выше)
+# подставьте имя скачанного архива своей платформы (шаг 1)
 mkdir scaffold && tar -xzf scaffold-linux-x64.tar.gz -C scaffold
 cd scaffold
 ```
